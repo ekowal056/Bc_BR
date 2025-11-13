@@ -1,0 +1,6 @@
+#Ignore Data
+FullFilters_Data/
+FullFilters_MC/
+
+#Root Files
+*.root
