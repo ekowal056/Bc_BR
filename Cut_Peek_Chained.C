@@ -4,12 +4,12 @@
 TChain *mctree = new TChain("TupleBcplus2JpsiPiplus/DecayTree");
 TChain *rtree = new TChain("TupleBcplus2JpsiPiplus/DecayTree");
 
-mctree->Add("FullFilters_MC/*/Bc2Jpsipi_ANA2013-069_allsim.root");
+mctree->Add("NewTry/FullFilteredSim/*/Bc2Jpsipi_ANA2013-069_allsim.root");
 rtree->Add("FullFilters_Data/*/Bc2Jpsipi_ANA2013-069_alldata.root");
 
-TString cut_name = "Jpsi_PT";
+TString cut_name = "Bc_ENDVERTEX_CHI2";
 double cut_low = 0;
-double cut_high = 35000;
+double cut_high = 50;
 
 // Grab MC Filtering Variables
 double MC_Bc_mass, MC_CUT;
@@ -57,7 +57,7 @@ for (int i=0; i<n; i++){
 		// Truth Cuts
 		if ( (TMath::Abs(MC_Bc_TRUEID) == 541 && TMath::Abs(MC_Jpsi_TRUEID) == 443) && ((MC_Jpsi_BKGCAT == 0 && MC_Bc_BKGCAT == 0) || (MC_Jpsi_BKGCAT == 50 && MC_Bc_BKGCAT == 50))  && (MC_BachPi_isMuon == 0)){
 			mc_mass_hist->Fill(MC_Bc_mass);
-			mc_cut_hist->Fill(MC_CUT);
+			mc_cut_hist->Fill(MC_CUT/3);
 	
 	}}
 
@@ -94,7 +94,7 @@ rtree->SetBranchAddress("Jpsi_Hlt2DiMuonDetachedHeavyDecision_TOS", &R_Jpsi_Hlt2
 rtree->SetBranchAddress("Jpsi_Hlt2TopoMu2BodyDecision_TOS", &R_Jpsi_Hlt2TopoMu2BodyDecision_TOS);
 rtree->SetBranchAddress("Jpsi_Hlt2TopoMu3BodyDecision_TOS", &R_Jpsi_Hlt2TopoMu3BodyDecision_TOS);
 
-
+std::cout<< "Finished MC FIlter" << std::endl;
 
 int m = rtree->GetEntries();
 
@@ -105,11 +105,11 @@ for (int i=0; i<m; i++){
 	
 		if (Bc_mass < 6200){
 			mass_low_hist->Fill(Bc_mass);
-			cut_low_hist->Fill(CUT);
+			cut_low_hist->Fill(CUT/3);
 		}
 		if (Bc_mass > 6350){
 			mass_high_hist->Fill(Bc_mass);
-                	cut_high_hist->Fill(CUT);
+                	cut_high_hist->Fill(CUT/3);
 	}}
 
 }
