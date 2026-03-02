@@ -13,21 +13,21 @@ void FitMass()
 double mass;
 
 TChain *simalltruth = new TChain("TupleBcplus2JpsiPiplus/DecayTree");
-simalltruth->Add("AllTruth/*/Bc2Jpsipi_ANA2013-069_SimTruth_all.root");
+simalltruth->Add("NewTry/FullFilteredSim/*/Bc2Jpsipi_ANA2013-069_SimTruth_all.root");
 
-simalltruth->SetBranchAddress("Bc_M", &mass);
+//simalltruth->SetBranchAddress("Bc_M", &mass);
 
 RooRealVar mBc("Bc_M", "m_{B_{C}}", 6000, 6500);
 RooRealVar BctrueID("Bc_TRUEID", "B_{c} TrueID", -600, 600);
 RooRealVar JpsitrueID("Jpsi_TRUEID", "J/psi True ID", -600, 600);
 RooRealVar BcBKGCAT("Bc_BKGCAT", "B_{c} Background Catagory", 0, 60);
 RooRealVar JpsiBKGCAT("Jpsi_BKGCAT", "J/psi Background Catagory", 0, 60);
-RooRealVar PiIsMuon("piplus_isMuon", "Pi^{+} isMuon", 0, 1);
+RooRealVar PiIsMuon("BachPi_isMuonLoose", "Pi^{+} isMuon", 0, 1);
 mBc.setUnit("MeV");
 mBc.setBins(100);
 
-RooDataSet *data = new RooDataSet("data", "data", simalltruth, RooArgList(mBc,BctrueID, JpsitrueID, BcBKGCAT, JpsiBKGCAT, PiIsMuon), "(TMath::Abs(Bc_TRUEID) == 541 && TMath::Abs(Jpsi_TRUEID) == 443) && (Jpsi_BKGCAT == 0 && Bc_BKGCAT == 0)  && (piplus_isMuon == 0)");
-RooDataSet *data50 = new RooDataSet("data", "data", simalltruth, RooArgList(mBc,BctrueID, JpsitrueID, BcBKGCAT, JpsiBKGCAT, PiIsMuon), "(TMath::Abs(Bc_TRUEID) == 541 && TMath::Abs(Jpsi_TRUEID) == 443) && (Jpsi_BKGCAT == 50 && Bc_BKGCAT == 50 ) && (piplus_isMuon == 0)");
+RooDataSet *data = new RooDataSet("data", "data", simalltruth, RooArgList(mBc,BctrueID, JpsitrueID, BcBKGCAT, JpsiBKGCAT, PiIsMuon), "(TMath::Abs(Bc_TRUEID) == 541 && TMath::Abs(Jpsi_TRUEID) == 443) && (Jpsi_BKGCAT == 0 && Bc_BKGCAT == 0)  && (BachPi_isMuonLoose == 0)");
+// RooDataSet *data50 = new RooDataSet("data", "data", simalltruth, RooArgList(mBc,BctrueID, JpsitrueID, BcBKGCAT, JpsiBKGCAT, PiIsMuon), "(TMath::Abs(Bc_TRUEID) == 541 && TMath::Abs(Jpsi_TRUEID) == 443) && (Jpsi_BKGCAT == 50 && Bc_BKGCAT == 50 ) && (BachPi_isMuonLoose == 0)");
 
 RooRealVar mu("mu", "#mu", 6270, 6100, 6400); // Expected mean and room to move
 RooRealVar sig1("sig1", "#sigma", 20, 1, 250); // Dont include zero because a divide by zero
@@ -49,14 +49,14 @@ RooRealVar gausfrac("gausfrac", "Fraction of additional Gaussians",0.5,  0, 1);
 
 
 // Plain Gaussian Fit
-//RooGaussian signalg1("signalg1", "Signal Gaussian", mBc, mu, sig1);
+RooGaussian signalg1("signalg1", "Signal Gaussian", mBc, mu, sig1);
 
 // Double Crystal Ball
 
-RooCBShape signalL("signalL", "Signal Crystal Ball Left", mBc, mu, sigL, alphaL, nL);
-RooCBShape signalR("signalR", "Signal Crystal Ball Right", mBc, mu, sigR, alphaR, nR);
+//RooCBShape signalL("signalL", "Signal Crystal Ball Left", mBc, mu, sigL, alphaL, nL);
+//RooCBShape signalR("signalR", "Signal Crystal Ball Right", mBc, mu, sigR, alphaR, nR);
 
-RooAddPdf doublecb("doublecb", "double cb signal", RooArgList(signalL, signalR), RooArgList(fracsig));
+//RooAddPdf doublecb("doublecb", "double cb signal", RooArgList(signalL, signalR), RooArgList(fracsig));
 
 
 
@@ -65,17 +65,18 @@ RooAddPdf doublecb("doublecb", "double cb signal", RooArgList(signalL, signalR),
 
 //RooAddPdf model("model", "Full Model", RooArgList(doublecb, signalg1), RooArgList(gausfrac));
 
-doublecb.fitTo(*data);
+//doublecb.fitTo(*data);
+signalg1.fitTo(*data);
 
 RooPlot *mframe = mBc.frame();
 data->plotOn(mframe);
-doublecb.plotOn(mframe);
+signalg1.plotOn(mframe);
 RooHist *pulls=mframe->pullHist();
-data50->plotOn(mframe, MarkerColor(kRed), LineColor(kRed));
+// data50->plotOn(mframe, MarkerColor(kRed), LineColor(kRed));
 
 //signal.plotOn(mframe, Components("*expo*"), LineStyle(kDashed),LineColor(kRed));
-doublecb.plotOn(mframe, Components("doublecb"), FillColor(kViolet), FillStyle(3001), DrawOption("F"));
-doublecb.paramOn(mframe);
+signalg1.plotOn(mframe, Components("*g*"), FillColor(kViolet), FillStyle(3001), DrawOption("F"));
+signalg1.paramOn(mframe);
 
 //model.plotOn(mframe, Components("signalg*"),LineStyle(kDashed), LineColor(kRed));
 

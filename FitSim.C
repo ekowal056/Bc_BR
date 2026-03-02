@@ -7,14 +7,14 @@
 using namespace RooFit;
 
 
-void FitData(){
+void FitSim(){
 
 	/// Load in Data
-//	TChain *mctree = new TChain("TupleBcplus2JpsiPiplus/DecayTree");
-	TChain *rtree = new TChain("TupleBcplus2JpsiPiplus/DecayTree");
+	TChain *mctree = new TChain("TupleBcplus2JpsiPiplus/DecayTree");
+//	TChain *rtree = new TChain("TupleBcplus2JpsiPiplus/DecayTree");
 
-//	mctree->Add("NewTry/FullFilteredSim/*/Bc2Jpsipi_ANA2013-069_allsim.root");
-	rtree->Add("DataPaperCut/*/Bc2Jpsipi_ANA2013-069_alldata.root");
+	mctree->Add("NewTry/FullFilteredSim/*/Bc2Jpsipi_ANA2013-069_allsim.root");
+//	rtree->Add("DataPaperCut/*/Bc2Jpsipi_ANA2013-069_alldata.root");
 
 	/// Define Mass Variable and Parameters
 	RooRealVar mBc("Bc_MM", "m_{B^+_c}", 6150, 6500);
@@ -36,8 +36,8 @@ void FitData(){
 	RooRealVar Jpsi_Hlt2TopoMu3BodyDecision_TOS("Jpsi_Hlt2TopoMu3BodyDecision_TOS", "Jpsi Hlt2TopoMu3BodyDecision TOS", 0, 1);
 
 	/// MC Truth Cut Variables
-	RooRealVar Bc_TRUEID("Bc_TRUEID", "Bc TRUEID", 0, 500);
-	RooRealVar Jpsi_TRUEID("Jpsi_TRUEID", "Jpsi TRUEID", 0, 450);
+	RooRealVar Bc_TRUEID("Bc_TRUEID", "Bc TRUEID", -600, 600);
+	RooRealVar Jpsi_TRUEID("Jpsi_TRUEID", "Jpsi TRUEID", -450, 450);
 	RooRealVar Bc_BKGCAT("Bc_BKGCAT", "Bc BKGCAT", 0, 130);
 	RooRealVar Jpsi_BKGCAT("Jpsi_BKGCAT", "Jpsi BKGCAT", 0, 130);
 	RooRealVar BachPi_isMuon("BachPi_isMuon", "BachPi isMuon", 0, 1);
@@ -94,40 +94,37 @@ void FitData(){
 
 ////////// Create RooDataSets //////////////////
 	
-	//RooDataSet *mc = new RooDataSet("mc", "2018 Monte Carlo Sim", mctree, RooArgList(Jpsi_L0MuonDecision_TOS,Jpsi_L0DiMuonDecision_TOS, Jpsi_Hlt1TrackMVADecision_TOS,Jpsi_Hlt1TrackMuonDecision_TOS,Jpsi_Hlt1DiMuonHighMassDecision_TOS,Jpsi_Hlt2DiMuonDetachedJPsiDecision_TOS,Jpsi_Hlt2DiMuonDetachedHeavyDecision_TOS,Jpsi_Hlt2TopoMu2BodyDecision_TOS,Jpsi_Hlt2TopoMu3BodyDecision_TOS,Bc_TRUEID,Jpsi_TRUEID,Jpsi_BKGCAT,Bc_BKGCAT,BachPi_isMuon), 
+	RooDataSet *mc = new RooDataSet("mc", "2018 Monte Carlo Sim", mctree, RooArgList(mBc,Bc_TRUEID, Jpsi_TRUEID, Jpsi_BKGCAT, Bc_BKGCAT, BachPi_isMuon),//Jpsi_L0MuonDecision_TOS,Jpsi_L0DiMuonDecision_TOS,Jpsi_Hlt1TrackMVADecision_TOS,Jpsi_Hlt1TrackMuonDecision_TOS,Jpsi_Hlt1DiMuonHighMassDecision_TOS,Jpsi_Hlt2DiMuonDetachedJPsiDecision_TOS,Jpsi_Hlt2DiMuonDetachedHeavyDecision_TOS,Jpsi_Hlt2TopoMu2BodyDecision_TOS,Jpsi_Hlt2TopoMu3BodyDecision_TOS, Bc_TRUEID, Jpsi_TRUEID, Jpsi_BKGCAT, Bc_BKGCAT, BachPi_isMuon),
 //			"(Jpsi_L0MuonDecision_TOS==1 || Jpsi_L0DiMuonDecision_TOS==1)" 
 //			"&& (( Jpsi_Hlt1TrackMVADecision_TOS==1|| Jpsi_Hlt1TrackMuonDecision_TOS==1) || Jpsi_Hlt1DiMuonHighMassDecision_TOS==1)" 
 //			"&& (( Jpsi_Hlt2DiMuonDetachedJPsiDecision_TOS==1 || Jpsi_Hlt2DiMuonDetachedHeavyDecision_TOS==1) || (Jpsi_Hlt2TopoMu2BodyDecision_TOS==1|| Jpsi_Hlt2TopoMu3BodyDecision_TOS==1))"
-//			"&& (TMath::Abs(Bc_TRUEID) == 541 && TMath::Abs(Jpsi_TRUEID) == 443)"
-//			"&& ((Jpsi_BKGCAT == 0 && Bc_BKGCAT == 0) || (Jpsi_BKGCAT == 50 && Bc_BKGCAT == 50))"
-//			"&& (BachPi_isMuon == 0)"
-//			//"&& "
-//
-//		
-//		);
+			" (TMath::Abs(Bc_TRUEID) == 541 && TMath::Abs(Jpsi_TRUEID) == 443)"
+			"&& ((Jpsi_BKGCAT == 0 && Bc_BKGCAT == 0) || (Jpsi_BKGCAT == 50 && Bc_BKGCAT == 50))"
+			"&& (BachPi_isMuon == 0)"
+		);
 
-	RooDataSet *data = new RooDataSet("data", "2018 Run2 Data", rtree, RooArgList(mBc,Jpsi_L0MuonDecision_TOS,Jpsi_L0DiMuonDecision_TOS, Jpsi_Hlt1TrackMVADecision_TOS,Jpsi_Hlt1TrackMuonDecision_TOS,Jpsi_Hlt1DiMuonHighMassDecision_TOS,Jpsi_Hlt2DiMuonDetachedJPsiDecision_TOS,Jpsi_Hlt2DiMuonDetachedHeavyDecision_TOS,Jpsi_Hlt2TopoMu2BodyDecision_TOS,Jpsi_Hlt2TopoMu3BodyDecision_TOS, MuM_PIDmu, MuP_PIDmu, MuM_PT, MuP_PT, MuM_TRACK_CHI2NDOF, MuP_TRACK_CHI2NDOF, Jpsi_M, Jpsi_ENDVERTEX_CHI2, Jpsi_ENDVERTEX_NDOF, Jpsi_FDCHI2_OWNPV, Jpsi_PT, MuM_IPCHI2_OWNPV, MuP_IPCHI2_OWNPV, BachPi_PT, BachPi_TRACK_CHI2NDOF, BachPi_IPCHI2_OWNPV, BachPi_PIDK, Bc_ENDVERTEX_CHI2, Bc_ENDVERTEX_NDOF, BachPi_PX, BachPi_PY, BachPi_PZ, BachPi_P, MuP_PX, MuP_PY, MuP_PZ, MuP_P, MuM_PX, MuM_PY, MuM_PZ, MuM_P, Jpsi_PX, Jpsi_PY, Bc_FD_OWNPV, Bc_M, Bc_P), 
-			"(Jpsi_L0MuonDecision_TOS==1 || Jpsi_L0DiMuonDecision_TOS==1)"
-                	"&& (( Jpsi_Hlt1TrackMVADecision_TOS==1|| Jpsi_Hlt1TrackMuonDecision_TOS==1) || Jpsi_Hlt1DiMuonHighMassDecision_TOS==1)"
-                	"&& (( Jpsi_Hlt2DiMuonDetachedJPsiDecision_TOS==1 || Jpsi_Hlt2DiMuonDetachedHeavyDecision_TOS==1) || (Jpsi_Hlt2TopoMu2BodyDecision_TOS==1|| Jpsi_Hlt2TopoMu3BodyDecision_TOS==1))"
-		 	"&&( MuM_PIDmu >0 && MuM_PIDmu > 0)"
-			"&& ( MuM_PT>900 && MuP_PT > 900)"
-			"&& (MuM_TRACK_CHI2NDOF<3.0 && MuP_TRACK_CHI2NDOF<3.0 )" // Taken down from 4.0 to 3.0
-			"&& (Jpsi_M > 3040 && Jpsi_M < 3140)" 
-			"&& (Jpsi_ENDVERTEX_CHI2/Jpsi_ENDVERTEX_NDOF <9.0)"
-			"&& Jpsi_FDCHI2_OWNPV>5.0"
-			"&& Jpsi_PT>1500"
-			"&& MuM_IPCHI2_OWNPV>9.0, MuP_IPCHI2_OWNPV>9.0"
-			"&& BachPi_PT>1000"
-			"&& BachPi_TRACK_CHI2NDOF < 4.0"
-			"&& BachPi_IPCHI2_OWNPV > 9.0"
-			"&& (((BachPi_PX*MuP_PX) + (BachPi_PY*MuP_PY) + (BachPi_PZ*MuP_PZ)) /(BachPi_P*MuP_P))<0.9999" //cos(t, mu)
-			"&& (((BachPi_PX*MuM_PX) + (BachPi_PY*MuM_PY) + (BachPi_PZ*MuM_PZ)) /(BachPi_P*MuM_P))<0.9999"
-			"&& BachPi_PIDK < 5.0"
-			"&& (((BachPi_PX*Jpsi_PX) + (BachPi_PY*Jpsi_PY))/ ( std::sqrt(BachPi_PX*BachPi_PX + BachPi_PY*BachPi_PY) * std::sqrt(Jpsi_PX*Jpsi_PX + Jpsi_PY*Jpsi_PY)))>-0.8" //cos(t, jpsi)
-			"&& (Bc_ENDVERTEX_CHI2/Bc_ENDVERTEX_NDOF <9.0)"
-			"&& (Bc_FD_OWNPV*10e-3*Bc_M/Bc_P/299792458.0)>0.25e-12" //proper lifetime of Bc
-			);
+	//RooDataSet *data = new RooDataSet("data", "2018 Run2 Data", rtree, RooArgList(mBc,Jpsi_L0MuonDecision_TOS,Jpsi_L0DiMuonDecision_TOS, Jpsi_Hlt1TrackMVADecision_TOS,Jpsi_Hlt1TrackMuonDecision_TOS,Jpsi_Hlt1DiMuonHighMassDecision_TOS,Jpsi_Hlt2DiMuonDetachedJPsiDecision_TOS,Jpsi_Hlt2DiMuonDetachedHeavyDecision_TOS,Jpsi_Hlt2TopoMu2BodyDecision_TOS,Jpsi_Hlt2TopoMu3BodyDecision_TOS, MuM_PIDmu, MuP_PIDmu, MuM_PT, MuP_PT, MuM_TRACK_CHI2NDOF, MuP_TRACK_CHI2NDOF, Jpsi_M, Jpsi_ENDVERTEX_CHI2, Jpsi_ENDVERTEX_NDOF, Jpsi_FDCHI2_OWNPV, Jpsi_PT, MuM_IPCHI2_OWNPV, MuP_IPCHI2_OWNPV, BachPi_PT, BachPi_TRACK_CHI2NDOF, BachPi_IPCHI2_OWNPV, BachPi_PIDK, Bc_ENDVERTEX_CHI2, Bc_ENDVERTEX_NDOF, BachPi_PX, BachPi_PY, BachPi_PZ, BachPi_P, MuP_PX, MuP_PY, MuP_PZ, MuP_P, MuM_PX, MuM_PY, MuM_PZ, MuM_P, Jpsi_PX, Jpsi_PY, Bc_FD_OWNPV, Bc_M, Bc_P), 
+	//"(Jpsi_L0MuonDecision_TOS==1 || Jpsi_L0DiMuonDecision_TOS==1)"
+         //       	"&& (( Jpsi_Hlt1TrackMVADecision_TOS==1|| Jpsi_Hlt1TrackMuonDecision_TOS==1) || Jpsi_Hlt1DiMuonHighMassDecision_TOS==1)"
+          //      	"&& (( Jpsi_Hlt2DiMuonDetachedJPsiDecision_TOS==1 || Jpsi_Hlt2DiMuonDetachedHeavyDecision_TOS==1) || (Jpsi_Hlt2TopoMu2BodyDecision_TOS==1|| Jpsi_Hlt2TopoMu3BodyDecision_TOS==1))"
+	//	 	"&&( MuM_PIDmu >0 && MuM_PIDmu > 0)"
+	//		"&& ( MuM_PT>900 && MuP_PT > 900)"
+	//		"&& (MuM_TRACK_CHI2NDOF<4.0 && MuP_TRACK_CHI2NDOF<4.0 )"
+	//		"&& (Jpsi_M > 3040 && Jpsi_M < 3140)"
+	//		"&& (Jpsi_ENDVERTEX_CHI2/Jpsi_ENDVERTEX_NDOF <9.0)"
+	//		"&& Jpsi_FDCHI2_OWNPV>5.0"
+	//		"&& Jpsi_PT>1500"
+	//		"&& MuM_IPCHI2_OWNPV>9.0, MuP_IPCHI2_OWNPV>9.0"
+	//		"&& BachPi_PT>1000"
+	//		"&& BachPi_TRACK_CHI2NDOF < 4.0"
+	//		"&& BachPi_IPCHI2_OWNPV > 9.0"
+	//		"&& (((BachPi_PX*MuP_PX) + (BachPi_PY*MuP_PY) + (BachPi_PZ*MuP_PZ)) /(BachPi_P*MuP_P))<0.9999" //cos(t, mu)
+	//		"&& (((BachPi_PX*MuM_PX) + (BachPi_PY*MuM_PY) + (BachPi_PZ*MuM_PZ)) /(BachPi_P*MuM_P))<0.9999"
+	//		"&& BachPi_PIDK < 5.0"
+	//		"&& (((BachPi_PX*Jpsi_PX) + (BachPi_PY*Jpsi_PY))/ ( std::sqrt(BachPi_PX*BachPi_PX + BachPi_PY*BachPi_PY) * std::sqrt(Jpsi_PX*Jpsi_PX + Jpsi_PY*Jpsi_PY)))>-0.8" //cos(t, jpsi)
+	//		"&& (Bc_ENDVERTEX_CHI2/Bc_ENDVERTEX_NDOF <9.0)"
+	//		"&& (Bc_FD_OWNPV*10e-3*Bc_M/Bc_P/299792458.0)>0.25e-12" //proper lifetime of Bc
+	//		);
 
 
 
@@ -135,13 +132,6 @@ void FitData(){
 
 	RooRealVar mu("mu", "#mu", 6300, 6100, 6400);
 	RooRealVar sig("sig", "#sigma", 20, 1, 250);
-	RooRealVar lambda("lambda", "#lambda", -0.001, -10,0.0);
-		//RooRealVar frac("frac", "fraction of Signal vs Background", 0, 1);
-	RooRealVar Nsig("Nsig", "Number of Signal Events", 100, 100, 1e6);
-	RooRealVar Nbg("Nbg", "Number of Background Events", 15000, 1000, 1e6);
-	//	RooGaussian sig_g("sig_g", "Signal Gaussian", mBc, mu, sig);
-	RooExponential expoBG("expoBG", "Exponential Background", mBc, lambda);
-
 	RooRealVar sigL("sigL", "#sigmaL", 20, 1, 250);
 	RooRealVar alphaL("alphaL", "#alpha_L", 0.5, 0.5,5); // + alpha = tail on left side, - alpha = tail on right side
 	RooRealVar nL("nL", "n_L", 2, 1, 100);
@@ -150,35 +140,54 @@ void FitData(){
 	RooRealVar nR("nR", "n_R", 2, 1, 100);
 	RooRealVar sigR("sigR", "#sigmaR", 20, 1, 250);
 	RooRealVar fracsig("fracsig", "Fraction of Signals", 0.7, 0,1);
-	
+
+		//RooRealVar lambda("lambda", "#lambda", -0.001, -10,0.0);
+		//RooRealVar frac("frac", "fraction of Signal vs Background", 0, 1);
+		//RooRealVar Nsig("Nsig", "Number of Signal Events", 100, 100, 1e6);
+		//RooRealVar Nbg("Nbg", "Number of Background Events", 15000, 1000, 1e6);
+	RooGaussian sig_g("sig_g", "Signal Gaussian", mBc, mu, sig);
+
+	// Double Crystal Ball
+
 	RooCBShape signalL("signalL", "Signal Crystal Ball Left", mBc, mu, sigL, alphaL, nL);
 	RooCBShape signalR("signalR", "Signal Crystal Ball Right", mBc, mu, sigR, alphaR, nR);
+	RooAddPdf doublecb("doublecb", "double cb signal", RooArgList(signalL, signalR), RooArgList(fracsig));
 
-
-	RooAddPdf signal("signal", "double cb signal", RooArgList(signalL, signalR), RooArgList(fracsig));
-
-	RooAddPdf model("model", "model", RooArgList(signal, expoBG), RooArgList(Nsig, Nbg));
-
-	model.fitTo(*data);
+	sig_g.fitTo(*mc);
+	doublecb.fitTo(*mc);
 
 	RooPlot *mframe = mBc.frame();
-	data->plotOn(mframe); // PLot the Data on plot
-        model.plotOn(mframe);
+	mc->plotOn(mframe); // PLot the Data on plot
+        sig_g.plotOn(mframe);
         RooHist *pulls=mframe->pullHist(); //Grabs from the last two things plotted
 
+	RooPlot *mframe2 = mBc.frame();
+        mc->plotOn(mframe2); // PLot the Data on plot
+        doublecb.plotOn(mframe2);
+        RooHist *pulls2=mframe2->pullHist(); 
+
         // Style and Decoration Fun!
-        model.plotOn(mframe, Components("*expo*"), LineStyle(kDashed), LineColor(kRed));
-        model.plotOn(mframe, Components("*sig*"), FillColor(kViolet), FillStyle(3001), DrawOption("F"));
-        model.paramOn(mframe);
+        //model.plotOn(mframe, Components("*expo*"), LineStyle(kDashed), LineColor(kRed));
+        //model.plotOn(mframe, Components("*sig*"), FillColor(kViolet), FillStyle(3001), DrawOption("F"));
+        sig_g.paramOn(mframe);
+	doublecb.paramOn(mframe2);
 
 	TCanvas *c1 = new TCanvas("c1", "c1", 480, 600);
-        c1->Divide(1,2);
+        c1->Divide(2,2);
         c1->cd(1);
         mframe->Draw(); //Draw the plot
 
-        c1->cd(2);
+        c1->cd(3);
 
         pulls->Draw();
+
+	c1->cd(2);
+	mframe2->Draw(); //Draw the plot
+
+        c1->cd(4);
+
+        pulls2->Draw();
+
 
         ///////////// 
 
