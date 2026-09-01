@@ -7,9 +7,9 @@ TChain *rtree = new TChain("TupleBcplus2JpsiPiplus/DecayTree");
 mctree->Add("NewTry/FullFilteredSim/*/Bc2Jpsipi_ANA2013-069_allsim.root");
 rtree->Add("FullFilters_Data/*/Bc2Jpsipi_ANA2013-069_alldata.root");
 
-TString cut_name = "Cos(pi+, Jpsi))";
-double cut_low = -1;
-double cut_high = 1;
+TString cut_name = "Bc_IPCHI2_OWNPV";
+double cut_low = 0;
+double cut_high = 20;
 
 //double MC_Bc_M, MC_Bc_P, MC_Bc_FD_OWNPV;
 
@@ -83,10 +83,10 @@ for (int i=0; i<n; i++){
 		// Truth Cuts
 		if ( (TMath::Abs(MC_Bc_TRUEID) == 541 && TMath::Abs(MC_Jpsi_TRUEID) == 443) && ((MC_Jpsi_BKGCAT == 0 && MC_Bc_BKGCAT == 0) || (MC_Jpsi_BKGCAT == 50 && MC_Bc_BKGCAT == 50))  && (MC_BachPi_isMuon == 0)){
 			mc_mass_hist->Fill(MC_Bc_mass);
-			//mc_cut_hist->Fill(MC_CUT/3);
+			mc_cut_hist->Fill(MC_CUT);
 			//mc_cut_hist->Fill(MC_Bc_FD_OWNPV*10e-3*MC_Bc_M/MC_Bc_P/c);
 			//mc_cut_hist->Fill( ((MC_BachPi_PX*MC_Mu_PX) + (MC_BachPi_PY*MC_Mu_PY) + (MC_BachPi_PZ*MC_Mu_PZ)) /(MC_BachPi_P*MC_Mu_P) );
-                        mc_cut_hist->Fill(( (MC_BachPi_PX*MC_Jpsi_PX) + (MC_BachPi_PY*MC_Jpsi_PY))/ ( std::sqrt(MC_BachPi_PX*MC_BachPi_PX + MC_BachPi_PY*MC_BachPi_PY) * std::sqrt(MC_Jpsi_PX*MC_Jpsi_PX + MC_Jpsi_PY*MC_Jpsi_PY)));
+                        //mc_cut_hist->Fill(( (MC_BachPi_PX*MC_Jpsi_PX) + (MC_BachPi_PY*MC_Jpsi_PY))/ ( std::sqrt(MC_BachPi_PX*MC_BachPi_PX + MC_BachPi_PY*MC_BachPi_PY) * std::sqrt(MC_Jpsi_PX*MC_Jpsi_PX + MC_Jpsi_PY*MC_Jpsi_PY)));
 
 		}}
 
@@ -156,19 +156,19 @@ for (int i=0; i<m; i++){
 	
 		if (Bc_mass < 6200){
 			mass_low_hist->Fill(Bc_mass);
-			//cut_low_hist->Fill(CUT/3);
+			cut_low_hist->Fill(CUT);
 			//cut_low_hist->Fill(Bc_FD_OWNPV*10e-3*Bc_M/Bc_P/c);
 			//cut_low_hist->Fill( ((BachPi_PX*Mu_PX) + (BachPi_PY*Mu_PY) + (BachPi_PZ*Mu_PZ)) /(BachPi_P*Mu_P) );
-                        cut_low_hist->Fill(( (BachPi_PX*Jpsi_PX) + (BachPi_PY*Jpsi_PY))/ ( std::sqrt(BachPi_PX*BachPi_PX + BachPi_PY*BachPi_PY) * std::sqrt(Jpsi_PX*Jpsi_PX + Jpsi_PY*Jpsi_PY)));
+                        //cut_low_hist->Fill(( (BachPi_PX*Jpsi_PX) + (BachPi_PY*Jpsi_PY))/ ( std::sqrt(BachPi_PX*BachPi_PX + BachPi_PY*BachPi_PY) * std::sqrt(Jpsi_PX*Jpsi_PX + Jpsi_PY*Jpsi_PY)));
 
 
 		}
 		if (Bc_mass > 6350){
 			mass_high_hist->Fill(Bc_mass);
-                	//cut_high_hist->Fill(CUT/3);
+                	cut_high_hist->Fill(CUT);
 			//cut_high_hist->Fill(Bc_FD_OWNPV*10e-3*Bc_M/Bc_P/c);
 			//cut_high_hist->Fill( ((BachPi_PX*Mu_PX) + (BachPi_PY*Mu_PY) + (BachPi_PZ*Mu_PZ)) /(BachPi_P*Mu_P) );
-			cut_high_hist->Fill(( (BachPi_PX*Jpsi_PX) + (BachPi_PY*Jpsi_PY))/ ( std::sqrt(BachPi_PX*BachPi_PX + BachPi_PY*BachPi_PY) * std::sqrt(Jpsi_PX*Jpsi_PX + Jpsi_PY*Jpsi_PY)));
+			//cut_high_hist->Fill(( (BachPi_PX*Jpsi_PX) + (BachPi_PY*Jpsi_PY))/ ( std::sqrt(BachPi_PX*BachPi_PX + BachPi_PY*BachPi_PY) * std::sqrt(Jpsi_PX*Jpsi_PX + Jpsi_PY*Jpsi_PY)));
 
 	}}
 

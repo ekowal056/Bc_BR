@@ -1,19 +1,19 @@
 {
 
 
-TFile *mcdata = new TFile("Bc2Jpsipi_ANA2013-069_allsim.root", "Read");
-TFile *rdata = new TFile("Bc2Jpsipi_ANA2013-069_alldata.root", "Read");
+TFile *mcdata = new TFile("JpsiMu/2018_MC_Bc2JpsiMu.root", "Read");
+TFile *rdata = new TFile("JpsiMu/2018_Data.root", "Read");
 
 TTree *mctree;
 TTree *rtree;
 
 
-mctree=dynamic_cast<TTree*>(mcdata->Get("TupleBcplus2JpsiPiplus/DecayTree"));
-rtree=dynamic_cast<TTree*>(rdata->Get("TupleBcplus2JpsiPiplus/DecayTree"));
+mctree=dynamic_cast<TTree*>(mcdata->Get("JpsiRecTuple/DecayTree"));
+rtree=dynamic_cast<TTree*>(rdata->Get("JpsiRecTuple/DecayTree"));
 
-TString cut_name = "Jpsi_PT";
+TString cut_name = "BachMu_IPCHI2_OWNPV";
 double cut_low = 0;
-double cut_high = 35000;
+double cut_high = 20;
 
 // Grab MC Filtering Variables
 double MC_Bc_mass, MC_CUT;
@@ -25,7 +25,7 @@ mctree->SetBranchAddress("Bc_TRUEID", &MC_Bc_TRUEID);
 mctree->SetBranchAddress("Jpsi_TRUEID", &MC_Jpsi_TRUEID);
 mctree->SetBranchAddress("Bc_BKGCAT", &MC_Bc_BKGCAT);
 mctree->SetBranchAddress("Jpsi_BKGCAT", &MC_Jpsi_BKGCAT);
-mctree->SetBranchAddress("BachPi_isMuon", &MC_BachPi_isMuon);
+//mctree->SetBranchAddress("BachPi_isMuon", &MC_BachPi_isMuon);
 mctree->SetBranchAddress(cut_name, &MC_CUT);
 
 // Trigger Variables
@@ -37,13 +37,13 @@ bool MC_Jpsi_Hlt2TopoMu2BodyDecision_TOS, MC_Jpsi_Hlt2TopoMu3BodyDecision_TOS;
 
 mctree->SetBranchAddress("Jpsi_L0MuonDecision_TOS", &MC_Jpsi_L0MuonDecision_TOS);
 mctree->SetBranchAddress("Jpsi_L0DiMuonDecision_TOS", &MC_Jpsi_L0DiMuonDecision_TOS);
-mctree->SetBranchAddress("Jpsi_Hlt1TrackMVADecision_TOS", &MC_Jpsi_Hlt1TrackMVADecision_TOS);
-mctree->SetBranchAddress("Jpsi_Hlt1TrackMuonDecision_TOS", &MC_Jpsi_Hlt1TrackMuonDecision_TOS);
+//mctree->SetBranchAddress("Jpsi_Hlt1TrackMVADecision_TOS", &MC_Jpsi_Hlt1TrackMVADecision_TOS);
+//mctree->SetBranchAddress("Jpsi_Hlt1TrackMuonDecision_TOS", &MC_Jpsi_Hlt1TrackMuonDecision_TOS);
 mctree->SetBranchAddress("Jpsi_Hlt1DiMuonHighMassDecision_TOS", &MC_Jpsi_Hlt1DiMuonHighMassDecision_TOS);
 mctree->SetBranchAddress("Jpsi_Hlt2DiMuonDetachedJPsiDecision_TOS", &MC_Jpsi_Hlt2DiMuonDetachedJPsiDecision_TOS);
 mctree->SetBranchAddress("Jpsi_Hlt2DiMuonDetachedHeavyDecision_TOS", &MC_Jpsi_Hlt2DiMuonDetachedHeavyDecision_TOS);
-mctree->SetBranchAddress("Jpsi_Hlt2TopoMu2BodyDecision_TOS", &MC_Jpsi_Hlt2TopoMu2BodyDecision_TOS);
-mctree->SetBranchAddress("Jpsi_Hlt2TopoMu3BodyDecision_TOS", &MC_Jpsi_Hlt2TopoMu3BodyDecision_TOS);
+//mctree->SetBranchAddress("Jpsi_Hlt2TopoMu2BodyDecision_TOS", &MC_Jpsi_Hlt2TopoMu2BodyDecision_TOS);
+//mctree->SetBranchAddress("Jpsi_Hlt2TopoMu3BodyDecision_TOS", &MC_Jpsi_Hlt2TopoMu3BodyDecision_TOS);
 
 
 
@@ -57,9 +57,11 @@ int n = mctree->GetEntries();
 for (int i=0; i<n; i++){
 	mctree->GetEntry(i);
 	// Trigger Cut
-	if ((MC_Jpsi_L0MuonDecision_TOS==1 || MC_Jpsi_L0DiMuonDecision_TOS==1) && ( MC_Jpsi_Hlt1TrackMVADecision_TOS==1|| MC_Jpsi_Hlt1TrackMuonDecision_TOS==1) && MC_Jpsi_Hlt1DiMuonHighMassDecision_TOS==1 && ( MC_Jpsi_Hlt2DiMuonDetachedJPsiDecision_TOS==1 || MC_Jpsi_Hlt2DiMuonDetachedHeavyDecision_TOS==1) && (MC_Jpsi_Hlt2TopoMu2BodyDecision_TOS==1|| MC_Jpsi_Hlt2TopoMu3BodyDecision_TOS==1)){
+	if ((MC_Jpsi_L0MuonDecision_TOS==1 || MC_Jpsi_L0DiMuonDecision_TOS==1) 
+			//&& ( MC_Jpsi_Hlt1TrackMVADecision_TOS==1|| MC_Jpsi_Hlt1TrackMuonDecision_TOS==1) 
+			&& MC_Jpsi_Hlt1DiMuonHighMassDecision_TOS==1 && ( MC_Jpsi_Hlt2DiMuonDetachedJPsiDecision_TOS==1 || MC_Jpsi_Hlt2DiMuonDetachedHeavyDecision_TOS==1)){// && (MC_Jpsi_Hlt2TopoMu2BodyDecision_TOS==1|| MC_Jpsi_Hlt2TopoMu3BodyDecision_TOS==1)){
 		// Truth Cuts
-		if ( (TMath::Abs(MC_Bc_TRUEID) == 541 && TMath::Abs(MC_Jpsi_TRUEID) == 443) && ((MC_Jpsi_BKGCAT == 0 && MC_Bc_BKGCAT == 0) || (MC_Jpsi_BKGCAT == 50 && MC_Bc_BKGCAT == 50))  && (MC_BachPi_isMuon == 0)){
+		if ( (TMath::Abs(MC_Bc_TRUEID) == 541 && TMath::Abs(MC_Jpsi_TRUEID) == 443) && ((MC_Jpsi_BKGCAT == 0 && MC_Bc_BKGCAT == 0) || (MC_Jpsi_BKGCAT == 50 && MC_Bc_BKGCAT == 50))){//  && (MC_BachMu_isMuon == 1)){
 			mc_mass_hist->Fill(MC_Bc_mass);
 			mc_cut_hist->Fill(MC_CUT);
 	
@@ -90,13 +92,13 @@ bool R_Jpsi_Hlt2TopoMu2BodyDecision_TOS, R_Jpsi_Hlt2TopoMu3BodyDecision_TOS;
 
 rtree->SetBranchAddress("Jpsi_L0MuonDecision_TOS", &R_Jpsi_L0MuonDecision_TOS);
 rtree->SetBranchAddress("Jpsi_L0DiMuonDecision_TOS", &R_Jpsi_L0DiMuonDecision_TOS);
-rtree->SetBranchAddress("Jpsi_Hlt1TrackMVADecision_TOS", &R_Jpsi_Hlt1TrackMVADecision_TOS);
-rtree->SetBranchAddress("Jpsi_Hlt1TrackMuonDecision_TOS", &R_Jpsi_Hlt1TrackMuonDecision_TOS);
+//rtree->SetBranchAddress("Jpsi_Hlt1TrackMVADecision_TOS", &R_Jpsi_Hlt1TrackMVADecision_TOS);
+//rtree->SetBranchAddress("Jpsi_Hlt1TrackMuonDecision_TOS", &R_Jpsi_Hlt1TrackMuonDecision_TOS);
 rtree->SetBranchAddress("Jpsi_Hlt1DiMuonHighMassDecision_TOS", &R_Jpsi_Hlt1DiMuonHighMassDecision_TOS);
 rtree->SetBranchAddress("Jpsi_Hlt2DiMuonDetachedJPsiDecision_TOS", &R_Jpsi_Hlt2DiMuonDetachedJPsiDecision_TOS);
 rtree->SetBranchAddress("Jpsi_Hlt2DiMuonDetachedHeavyDecision_TOS", &R_Jpsi_Hlt2DiMuonDetachedHeavyDecision_TOS);
-rtree->SetBranchAddress("Jpsi_Hlt2TopoMu2BodyDecision_TOS", &R_Jpsi_Hlt2TopoMu2BodyDecision_TOS);
-rtree->SetBranchAddress("Jpsi_Hlt2TopoMu3BodyDecision_TOS", &R_Jpsi_Hlt2TopoMu3BodyDecision_TOS);
+//rtree->SetBranchAddress("Jpsi_Hlt2TopoMu2BodyDecision_TOS", &R_Jpsi_Hlt2TopoMu2BodyDecision_TOS);
+//rtree->SetBranchAddress("Jpsi_Hlt2TopoMu3BodyDecision_TOS", &R_Jpsi_Hlt2TopoMu3BodyDecision_TOS);
 
 
 
@@ -105,7 +107,10 @@ int m = rtree->GetEntries();
 for (int i=0; i<m; i++){
         rtree->GetEntry(i);
 
-	if ((R_Jpsi_L0MuonDecision_TOS==1 || R_Jpsi_L0DiMuonDecision_TOS==1) && ( R_Jpsi_Hlt1TrackMVADecision_TOS==1|| R_Jpsi_Hlt1TrackMuonDecision_TOS==1) && R_Jpsi_Hlt1DiMuonHighMassDecision_TOS==1 && ( R_Jpsi_Hlt2DiMuonDetachedJPsiDecision_TOS==1 || R_Jpsi_Hlt2DiMuonDetachedHeavyDecision_TOS==1) && (R_Jpsi_Hlt2TopoMu2BodyDecision_TOS==1|| R_Jpsi_Hlt2TopoMu3BodyDecision_TOS==1)){
+	if ((R_Jpsi_L0MuonDecision_TOS==1 || R_Jpsi_L0DiMuonDecision_TOS==1) 
+			//&& ( R_Jpsi_Hlt1TrackMVADecision_TOS==1|| R_Jpsi_Hlt1TrackMuonDecision_TOS==1) 
+			&& R_Jpsi_Hlt1DiMuonHighMassDecision_TOS==1 
+			&& ( R_Jpsi_Hlt2DiMuonDetachedJPsiDecision_TOS==1 || R_Jpsi_Hlt2DiMuonDetachedHeavyDecision_TOS==1)){// && (R_Jpsi_Hlt2TopoMu2BodyDecision_TOS==1|| R_Jpsi_Hlt2TopoMu3BodyDecision_TOS==1)){
 	
 		if (Bc_mass < 6200){
 			mass_low_hist->Fill(Bc_mass);
@@ -116,6 +121,17 @@ for (int i=0; i<m; i++){
                 	cut_high_hist->Fill(CUT);
 	}}
 
+}
+
+if (mc_cut_hist->GetMaximum() > 0) {
+    mc_cut_hist->Scale(1.0 / mc_cut_hist->GetMaximum());
+}
+
+if (cut_high_hist->GetMaximum() > 0) {
+    cut_high_hist->Scale(1.0 / cut_high_hist->GetMaximum());
+}
+if (cut_low_hist->GetMaximum() > 0) {
+    cut_low_hist->Scale(1.0 / cut_low_hist->GetMaximum());
 }
 
 mc_cut_hist->SetFillStyle(3001);
@@ -163,9 +179,9 @@ cut_high_hist->Draw();
 
 TCanvas *compare = new TCanvas("compare", "Overlapping Histograms of MC Signal and Background Data", 1200, 600);
 
-cut_low_hist->Draw();
-cut_high_hist->Draw("Same");
-mc_cut_hist->Draw("Same");
+cut_low_hist->Draw("Hist");
+cut_high_hist->Draw("Hist Same");
+mc_cut_hist->Draw("Hist Same");
 
 
 
